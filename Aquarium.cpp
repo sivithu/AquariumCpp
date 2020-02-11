@@ -9,16 +9,14 @@
 
 Aquarium::Aquarium(std::vector<Poisson> poissons, std::vector<Algue> algues) : poissons(poissons), algues(algues) {}
 
-Aquarium::~Aquarium() {
-
-}
+Aquarium::~Aquarium() {}
 
 const std::vector<Algue> &Aquarium::getAlgues() const {
     return algues;
 }
 
 void Aquarium::setAlgues(const std::vector<Algue> &algues) {
-    Aquarium::algues = algues;
+    this->algues = algues;
 }
 
 const std::vector<Poisson> &Aquarium::getPoissons() const {
@@ -26,11 +24,11 @@ const std::vector<Poisson> &Aquarium::getPoissons() const {
 }
 
 void Aquarium::setPoissons(const std::vector<Poisson> &poissons) {
-    Aquarium::poissons = poissons;
+    this->poissons = poissons;
 }
 
-void Aquarium::addPoission(Poisson &p) {
-    poissons.push_back(p);
+void Aquarium::addPoisson(Poisson &p) {
+    this->poissons.push_back(p);
 }
 
 void Aquarium::passerTour() {
@@ -98,6 +96,7 @@ void Aquarium::gestionVie() {
             }
         }
     }
+
     std::vector<Poisson>::iterator itP, endP;
     if(!poissons.empty()){
         for(itP = poissons.begin(), endP = poissons.end(); itP != endP; ++itP) {
@@ -113,6 +112,7 @@ void Aquarium::gestionVie() {
             }
         }
     }
+
 }
 
 void Aquarium::afficherDetails() {
@@ -127,8 +127,8 @@ void Aquarium::afficherDetails() {
     if(!poissons.empty()){
         std::cout << "   ------------Poisson-------------   " << std::endl;
         for(itP = poissons.begin(), endP = poissons.end(); itP != endP; ++itP) {
-            std::string val = itP->isHerbivore()?"Herbivore":"Carnivore";
-            std::cout << "Nom : " << itP->getNom() << "; Sexe : " << itP->getSexe() << "; Race : " << itP->getType() << "; " << val << "; PV : " << itP->getPv() << std::endl;
+            std::string val = itP->isHerbivore() ? "Herbivore" : "Carnivore";
+            std::cout << "Nom : " << itP->getNom() << "; Sexe : " << itP->getSexe() << "; Race : " << itP->getType() << "; " << val << "; PV : " << itP->getPv() << "; Age : " << itP->getAge() << std::endl;
         }
     }
 }
@@ -138,18 +138,24 @@ void Aquarium::addAlgue(Algue &a) {
 }
 
 void Aquarium::reproduction() {
+
     std::vector<Algue>::iterator itA, endA;
+    std::vector<Algue> newAlgues;
     if(!algues.empty()){
         for(itA = algues.begin(), endA = algues.end(); itA != endA; ++itA) {
             if(itA->getPv() >= 10) {
-                itA->setPv(itA->getPv() - 5);
-                Algue *a = new Algue();
-                a->setPv(a->getPv() - 5);
-                algues.push_back(*a);
+                itA->setPv(itA->getPv()/2);
+                auto *a = new Algue();
+                a->setPv(a->getPv()/2);
+                newAlgues.push_back(*a);
                 std::cout << "Une algue a donné naissance à une autre algue" << std::endl;
             }
         }
+        for(itA = newAlgues.begin(), endA = newAlgues.end(); itA != endA; ++itA) {
+            algues.push_back(*itA);
+        }
     }
+
     std::vector<Poisson>::iterator itP, endP;
     std::vector<Poisson> p = poissons;
     if(!poissons.empty()){
@@ -158,7 +164,7 @@ void Aquarium::reproduction() {
                 int randIndex = rand() % p.size();
                 if(itP->getNom() != p[randIndex].getNom() && itP->getType() == p[randIndex].getType() && itP->getSexe() != p[randIndex].getSexe()) {
                     auto val = poissons.begin() + randIndex;
-                    Poisson *np = new Poisson(itP->getNom() + "-" + val->getNom() + "_" + "son", 'M', itP->getType());
+                    auto *np = new Poisson(itP->getNom() + "-" + val->getNom() + "_" + "son", 'M', itP->getType());
                     poissons.push_back(*np);
                     std::cout << itP->getNom() << " et " << val->getNom() << " ont donné naissance à " << np->getNom() << std::endl;
                 }

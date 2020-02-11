@@ -24,7 +24,7 @@ public:
     void gestionVie();
     void reproduction();
     void afficherDetails();
-    void addPoission(Poisson &p);
+    void addPoisson(Poisson &p);
     void addAlgue(Algue &a);
 };
 

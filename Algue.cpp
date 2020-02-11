@@ -8,8 +8,8 @@ int Algue::getPv() const {
     return pv;
 }
 
-void Algue::setPv(int pv) {
-    Algue::pv = pv;
+void Algue::setPv(int number) {
+    Algue::pv = number;
 }
 
 Algue::Algue() {}
@@ -20,6 +20,6 @@ int Algue::getAge() const {
     return age;
 }
 
-void Algue::setAge(int age) {
-    Algue::age = age;
+void Algue::setAge(int number) {
+    Algue::age = number;
 }
