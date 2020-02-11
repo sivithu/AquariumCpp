@@ -8,6 +8,8 @@ Poisson::Poisson() {}
 
 Poisson::Poisson(const std::string &nom, char sexe, Races type) : nom(nom), sexe(sexe), type(type) {}
 
+Poisson::Poisson(const std::string &nom, char sexe, Races type, int age) : nom(nom), sexe(sexe), type(type), age(age) {}
+
 Poisson::~Poisson() {
 
 }
@@ -56,4 +58,12 @@ int Poisson::getPv() const {
 
 void Poisson::setPv(int pv) {
     Poisson::pv = pv;
+}
+
+int Poisson::getAge() const {
+    return age;
+}
+
+void Poisson::setAge(int age) {
+    Poisson::age = age;
 }

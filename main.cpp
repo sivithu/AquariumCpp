@@ -49,6 +49,7 @@ int main() {
             case 'p' :
                 int genre;
                 int race;
+                int age;
                 std::cout << "Donnez un nom : ";
                 std::cin >> nom;
                 ps->setNom(nom);
@@ -107,6 +108,17 @@ int main() {
                         std::cin.clear();
                         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                         break;
+                }
+                std::cout << "Quel age a " << nom << " ?" << std::endl;
+                std::cin >> age;
+                if(age >= 0 && age < 20) {
+                    ps->setAge(age);
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                } else {
+                    std::cout << "Entrée erronée, poisson par défaut : 0" << std::endl;
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 }
                 aq.addPoission(*ps);
                 afficherCondition();

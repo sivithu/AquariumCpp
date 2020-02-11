@@ -80,7 +80,7 @@ void Aquarium::passerTour() {
         this->setPoissons(p);
     }
     gestionVie();
-
+    reproduction();
     std::cout << "------------APRES------------" << std::endl;
     afficherDetails();
     std::cout << "------------END------------" << std::endl;
@@ -91,14 +91,24 @@ void Aquarium::gestionVie() {
     if(!algues.empty()){
         for(itA = algues.begin(), endA = algues.end(); itA != endA; ++itA) {
             itA->setPv(itA->getPv() + 1);
+            itA->setAge(itA->getAge() + 1);
+            if(itA->getAge() >= 20) {
+                std::cout << "Une algue est mort de vieillesse" << std::endl;
+                algues.erase(itA);
+            }
         }
     }
     std::vector<Poisson>::iterator itP, endP;
     if(!poissons.empty()){
         for(itP = poissons.begin(), endP = poissons.end(); itP != endP; ++itP) {
             itP->setPv(itP->getPv() - 1);
+            itP->setAge(itP->getAge() + 1);
             if(itP->getPv() <= 0) {
                 std::cout << itP->getNom() << " est mort" << std::endl;
+                poissons.erase(itP);
+            }
+            if(itP->getAge() >= 20) {
+                std::cout << itP->getNom() << " est mort de vieillesse" << std::endl;
                 poissons.erase(itP);
             }
         }
@@ -125,4 +135,34 @@ void Aquarium::afficherDetails() {
 
 void Aquarium::addAlgue(Algue &a) {
     algues.push_back(a);
+}
+
+void Aquarium::reproduction() {
+    std::vector<Algue>::iterator itA, endA;
+    if(!algues.empty()){
+        for(itA = algues.begin(), endA = algues.end(); itA != endA; ++itA) {
+            if(itA->getPv() >= 10) {
+                itA->setPv(itA->getPv() - 5);
+                Algue *a = new Algue();
+                a->setPv(a->getPv() - 5);
+                algues.push_back(*a);
+                std::cout << "Une algue a donné naissance à une autre algue" << std::endl;
+            }
+        }
+    }
+    std::vector<Poisson>::iterator itP, endP;
+    std::vector<Poisson> p = poissons;
+    if(!poissons.empty()){
+        for(itP = poissons.begin(), endP = poissons.end(); itP != endP; ++itP) {
+            if(itP->getPv() >= 5) {
+                int randIndex = rand() % p.size();
+                if(itP->getNom() != p[randIndex].getNom() && itP->getType() == p[randIndex].getType() && itP->getSexe() != p[randIndex].getSexe()) {
+                    auto val = poissons.begin() + randIndex;
+                    Poisson *np = new Poisson(itP->getNom() + "-" + val->getNom() + "_" + "son", 'M', itP->getType());
+                    poissons.push_back(*np);
+                    std::cout << itP->getNom() << " et " << val->getNom() << " ont donné naissance à " << np->getNom() << std::endl;
+                }
+            }
+        }
+    }
 }

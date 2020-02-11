@@ -22,6 +22,7 @@ public:
     void setAlgues(const std::vector<Algue> &algues);
     void passerTour();
     void gestionVie();
+    void reproduction();
     void afficherDetails();
     void addPoission(Poisson &p);
     void addAlgue(Algue &a);

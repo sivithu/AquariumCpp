@@ -13,3 +13,13 @@ void Algue::setPv(int pv) {
 }
 
 Algue::Algue() {}
+
+Algue::Algue(int age) : age(age) {}
+
+int Algue::getAge() const {
+    return age;
+}
+
+void Algue::setAge(int age) {
+    Algue::age = age;
+}
