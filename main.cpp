@@ -59,7 +59,8 @@ void chooseFishName(Poisson *newPoisson) {
 }
 
 void chooseFishGender(Poisson *newPoisson) {
-    char genre;
+    int genre;
+    char genderRandom[] = "MF";
 
     std::cout << "Choississez un genre" << std::endl;
     std::cout << "1 - Mâle" << std::endl;
@@ -74,13 +75,7 @@ void chooseFishGender(Poisson *newPoisson) {
             newPoisson->setSexe('F');
             break;
         default:
-            newPoisson->setSexe('M');
-            /*
-             * When an error occurs when reading from a stream, an error flag gets set and no more reading is possible
-             * until you clear the error flags. That's why you get an infinite loop.
-             */
-            std::cin.clear();// clears the error flags
-            // this line discards all the input waiting in the stream
+            newPoisson->setSexe(genderRandom[rand() % 2]);
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             break;
     }
@@ -112,8 +107,8 @@ void setupNewFish(Poisson *newPoisson) {
 int main() {
     std::vector<Poisson> p;
     std::vector<Algue> a;
-
-    /*auto *p1 = new Poisson("Faby", 'F', Races::THON);
+    /*
+    auto *p1 = new Poisson("Faby", 'F', Races::THON);
     p.push_back(*p1);
     auto *p2 = new Poisson("Ramzy", 'M', Races::POISSON_CLOWN);
     p.push_back(*p2);
@@ -126,12 +121,13 @@ int main() {
     auto *a2 = new Algue();
     a.push_back(*a2);
     auto *a3 = new Algue();
-    a.push_back(*a3);*/
-
+    a.push_back(*a3);
+*/
     Aquarium aquarium = Aquarium(p, a);
     aquarium.passerTour();
 
     std::string entry;
+
     afficherCondition();
     std::cin >> entry;
 
@@ -180,5 +176,3 @@ int main() {
         }
     }
 }
-
-

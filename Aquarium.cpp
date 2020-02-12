@@ -38,7 +38,7 @@ void Aquarium::passerTour() {
     afficherDetails();
     if(!poissons.empty()){
         for(it = poissons.begin(); it != poissons.end(); ++it) {
-            if(it->isCarnivore()) {
+            if(it->isHerbivore()) {
                 //manger Algue
                 if(!algues.empty()) {
                     if(it->getPv() <= 5) {
@@ -46,10 +46,7 @@ void Aquarium::passerTour() {
                         it->setPv(it->getPv() + 3);
                         val->setPv(val->getPv() - 2);
                         std::cout << it->getNom() << " a mangé une algue ////////// pv : " << it->getPv() <<std::endl;
-                        if(val->getPv() <= 0) {
-                            std::cout << " Algue est mort " << std::endl;
-                            algues.erase(val);
-                        }
+                        gestionVieAlgue();
                     }
                 }
             } else {
@@ -64,18 +61,12 @@ void Aquarium::passerTour() {
                             it->setPv(it->getPv() + 5);
                             val->setPv(val->getPv() - 4);
                             std::cout << it->getNom() << " a mangé " << val->getNom() << " ////////// " << it->getPv() << " :: " << val->getPv() << std::endl;
-                            if(val->getPv() <= 0) {
-                                std::cout << val->getNom() << " est mort " << std::endl;
-                                p.erase(val);
-                            }
+                            gestionViePoisson();
                         }
                     }
                 }
             }
         }
-    }
-    if(p.size() != poissons.size()) {
-        this->setPoissons(p);
     }
     gestionVie();
     reproduction();
@@ -85,34 +76,60 @@ void Aquarium::passerTour() {
 }
 
 void Aquarium::gestionVie() {
+    gestionVieAlgue();
+    gestionViePoisson();
+}
+
+void Aquarium::gestionVieAlgue() {
     std::vector<Algue>::iterator itA, endA;
+    std::vector<int> algueVecInt;
+    std::vector<Algue> newVecAlgue;
+    int implAlgue = 0;
     if(!algues.empty()){
         for(itA = algues.begin(), endA = algues.end(); itA != endA; ++itA) {
             itA->setPv(itA->getPv() + 1);
             itA->setAge(itA->getAge() + 1);
-            if(itA->getAge() >= 20) {
+            if(itA->getAge() < 20) {
+                newVecAlgue.push_back(algues[implAlgue]);
+            } else {
                 std::cout << "Une algue est mort de vieillesse" << std::endl;
-                algues.erase(itA);
             }
+            implAlgue++;
         }
+        this->setAlgues(newVecAlgue);
     }
+}
 
+void Aquarium::gestionViePoisson() {
+    std::vector<Poisson> newVecPoisson;
     std::vector<Poisson>::iterator itP, endP;
+    int implPoisson = 0;
     if(!poissons.empty()){
         for(itP = poissons.begin(), endP = poissons.end(); itP != endP; ++itP) {
-            itP->setPv(itP->getPv() - 1);
             itP->setAge(itP->getAge() + 1);
-            if(itP->getPv() <= 0) {
-                std::cout << itP->getNom() << " est mort" << std::endl;
-                poissons.erase(itP);
-            }
-            if(itP->getAge() >= 20) {
+            if (itP->getAge() < 20) {
+                newVecPoisson.push_back(poissons[implPoisson]);
+            } else {
                 std::cout << itP->getNom() << " est mort de vieillesse" << std::endl;
-                poissons.erase(itP);
             }
+            implPoisson++;
         }
-    }
+        this->setPoissons(newVecPoisson);
 
+        newVecPoisson.clear();
+        implPoisson = 0;
+
+        for(itP = poissons.begin(), endP = poissons.end(); itP != endP; ++itP) {
+            itP->setPv(itP->getPv() - 1);
+            if (itP->getPv() > 0) {
+                newVecPoisson.push_back(poissons[implPoisson]);
+            } else {
+                std::cout << itP->getNom() << " est mort" << std::endl;
+            }
+            implPoisson++;
+        }
+        this->setPoissons(newVecPoisson);
+    }
 }
 
 void Aquarium::afficherDetails() {
@@ -120,9 +137,11 @@ void Aquarium::afficherDetails() {
     std::vector<Poisson>::iterator itP, endP;
     if(!algues.empty()){
         std::cout << "   ------------Algue-------------   " << std::endl;
+        /*
         for(itA = algues.begin(), endA = algues.end(); itA != endA; ++itA) {
             std::cout << "PV : " << itA->getPv() << std::endl;
-        }
+        }*/
+        std::cout << "Nombre d'algues : " << algues.size() << std::endl;
     }
     if(!poissons.empty()){
         std::cout << "   ------------Poisson-------------   " << std::endl;
@@ -138,7 +157,7 @@ void Aquarium::addAlgue(Algue &a) {
 }
 
 void Aquarium::reproduction() {
-
+    char genderRandom[] = "MF";
     std::vector<Algue>::iterator itA, endA;
     std::vector<Algue> newAlgues;
     if(!algues.empty()){
@@ -158,17 +177,22 @@ void Aquarium::reproduction() {
 
     std::vector<Poisson>::iterator itP, endP;
     std::vector<Poisson> p = poissons;
+    std::vector<Poisson> newVecPoisson;
     if(!poissons.empty()){
         for(itP = poissons.begin(), endP = poissons.end(); itP != endP; ++itP) {
             if(itP->getPv() >= 5) {
                 int randIndex = rand() % p.size();
-                if(itP->getNom() != p[randIndex].getNom() && itP->getType() == p[randIndex].getType() && itP->getSexe() != p[randIndex].getSexe()) {
+                if(itP->getNom() != p[randIndex].getNom() && itP->getType() == p[randIndex].getType() && itP->getSexe() != p[randIndex].getSexe() && itP->getSexe() == 'M') {
                     auto val = poissons.begin() + randIndex;
-                    auto *np = new Poisson(itP->getNom() + "-" + val->getNom() + "_" + "son", 'M', itP->getType());
-                    poissons.push_back(*np);
+
+                    auto *np = new Poisson(itP->getNom() + "-" + val->getNom() + "_" + "son", genderRandom[rand() % 2], itP->getType());
+                    newVecPoisson.push_back(*np);
                     std::cout << itP->getNom() << " et " << val->getNom() << " ont donné naissance à " << np->getNom() << std::endl;
                 }
             }
+        }
+        for(int i = 0; i < newVecPoisson.size(); i++){
+            poissons.push_back(newVecPoisson[i]);
         }
     }
 }

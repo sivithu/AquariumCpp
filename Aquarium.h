@@ -26,6 +26,8 @@ public:
     void afficherDetails();
     void addPoisson(Poisson &p);
     void addAlgue(Algue &a);
+    void gestionVieAlgue();
+    void gestionViePoisson();
 };
 
 #endif //AQUARIUM_AQUARIUM_H
